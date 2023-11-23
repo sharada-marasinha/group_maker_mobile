@@ -7,7 +7,6 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -15,20 +14,17 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const MyHomePage(),
+      home: MyHomePage(),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key});
   @override
-  // ignore: library_private_types_in_public_api
   _MyHomePageState createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  bool isInApp = false;
   List<String> names = [
     'John',
     'Jane',
@@ -40,31 +36,11 @@ class _MyHomePageState extends State<MyHomePage> {
     'Emma',
     'Frank',
     'Grace',
-    'Grace',
-    'Grace',
-    'Grace',
-    'Grace',
-    'Grace',
-    'Grace',
-    'Grace',
-    'Grace',
-    'Grace',
-    'Grace',
-    'Grace',
-    'Grace',
-    'Grace',
-    'Grace',
-    'Grace',
-    'Grace',
-    'Grace',
-    'Grace',
-    'Grace',
-    'Grace',
-    'Grace',
-    'Grace',
   ];
 
   List<List<String>> groups = [];
+
+  final TextEditingController nameController = TextEditingController();
 
   void buildTeams() {
     names.shuffle();
@@ -80,67 +56,96 @@ class _MyHomePageState extends State<MyHomePage> {
       groups.add(names.sublist(i * groupSize, endIndex));
     }
 
-    for (int i = 0; i < remainingPlayers; i++) {
-      groups[i].add(names[numberOfTeams * groupSize + i]);
+    if (remainingPlayers > 0 && remainingPlayers <= 3) {
+      for (int i = 0; i < remainingPlayers; i++) {
+        groups[i].add(names[numberOfTeams * groupSize + i]);
+      }
+    } else if (remainingPlayers > 3) {
+      int remainingCount = remainingPlayers;
+      for (int i = 0; i < numberOfTeams; i++) {
+        if (remainingCount > 0) {
+          groups[i].add(names[numberOfTeams * groupSize + i]);
+          remainingCount--;
+        }
+      }
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    buildTeams();
-
-    return isInApp
-        ? Scaffold(
-            appBar: AppBar(
-              title: const Text('Team Builder'),
+    return Scaffold(
+      appBar: AppBar(
+        title: const Center(child: Text('Team Builder')),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            TextField(
+              controller: nameController,
+              decoration: const InputDecoration(
+                labelText: 'Enter Name',
+              ),
             ),
-            body: ListView.builder(
-              itemCount: groups.length,
-              itemBuilder: (context, index) {
-                return Card(
-                  child: ListTile(
-                    title: Text('Group ${index + 1}'),
-                    subtitle: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children:
-                          groups[index].map((name) => Text(name)).toList(),
-                    ),
-                  ),
-                );
+            const SizedBox(height: 16.0),
+            ElevatedButton(
+              onPressed: () {
+                String newName = nameController.text.trim();
+                if (newName.isNotEmpty && !names.contains(newName)) {
+                  setState(() {
+                    names.add(newName);
+                    nameController.clear();
+                    buildTeams();
+                  });
+                }
               },
+              child: const Text('Add Name'),
             ),
-          )
-        : Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Padding(
-                padding: EdgeInsets.only(bottom: 200),
-                child: Text(
-                  'New Game',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 60.0,
-                    fontWeight: FontWeight.bold,
-                  ),
+            const SizedBox(height: 16.0),
+            Card(
+              color: const Color.fromARGB(255, 0, 0, 0),
+              child: Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Column(
+                  children: [
+                    Text(
+                      'Group Count : ${groups.length} | Student Count ${names.length}',
+                      style: const TextStyle(
+                          fontSize: 20,
+                          fontStyle: FontStyle.italic,
+                          fontWeight: FontWeight.w900,
+                          color: Colors.white),
+                    )
+                  ],
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.only(top: 100),
-                child: TextButton(
-                  onPressed: () {
-                    setState(() {
-                      isInApp = true;
-                    });
-                  },
-                  style: TextButton.styleFrom(
-                      backgroundColor: Colors.red,
-                      foregroundColor: Colors.white,
-                      textStyle: const TextStyle(
-                          fontWeight: FontWeight.w600, fontSize: 30)),
-                  child: const Text('Start'),
-                ),
-              )
-            ],
-          );
+            ),
+            const SizedBox(height: 16.0),
+            Expanded(
+              child: ListView.builder(
+                itemCount: groups.length,
+                itemBuilder: (context, index) {
+                  return Card(
+                    margin: const EdgeInsets.all(8.0),
+                    child: ListTile(
+                      title: Text(
+                        'Group ${index + 1}',
+                        style: const TextStyle(fontSize: 20),
+                      ),
+                      subtitle: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children:
+                            groups[index].map((name) => Text(name)).toList(),
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }
