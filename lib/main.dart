@@ -10,12 +10,16 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Team Builder App',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home:const Scaffold(
-        body: MyHomePage(),
+      home: Scaffold(
+        appBar: AppBar(
+          title: const Text('Group Maker'),
+          elevation: 0,
+          leading: const Icon(Icons.menu),
+          actions: [
+            IconButton(onPressed: () {}, icon: const Icon(Icons.logout))
+          ],
+        ),
+        body: const MyHomePage(),
       ),
     );
   }
@@ -48,7 +52,6 @@ class _MyHomePageState extends State<MyHomePage> {
   void buildTeams() {
     names.shuffle();
     int groupSize = 5;
-
     int numberOfTeams = names.length ~/ groupSize;
     int remainingPlayers = names.length % groupSize;
 
@@ -76,15 +79,31 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Center(child: Text('Team Builder')),
-      ),
-      body: Padding(
+    return Container(
+      child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+            Card(
+              color: Colors.blue[700],
+              child: Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Column(
+                  children: [
+                    Text(
+                      'Group Count : ${groups.length} | Student Count ${names.length}',
+                      style: const TextStyle(
+                          fontSize: 20,
+                          fontStyle: FontStyle.italic,
+                          fontWeight: FontWeight.w900,
+                          color: Colors.white),
+                    )
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: 16.0),
             TextField(
               controller: nameController,
               decoration: const InputDecoration(
@@ -104,25 +123,6 @@ class _MyHomePageState extends State<MyHomePage> {
                 }
               },
               child: const Text('Add Name'),
-            ),
-            const SizedBox(height: 16.0),
-            Card(
-              color: const Color.fromARGB(255, 0, 0, 0),
-              child: Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: Column(
-                  children: [
-                    Text(
-                      'Group Count : ${groups.length} | Student Count ${names.length}',
-                      style: const TextStyle(
-                          fontSize: 20,
-                          fontStyle: FontStyle.italic,
-                          fontWeight: FontWeight.w900,
-                          color: Colors.white),
-                    )
-                  ],
-                ),
-              ),
             ),
             const SizedBox(height: 16.0),
             Expanded(
