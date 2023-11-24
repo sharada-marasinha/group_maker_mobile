@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:group_maker/app.dart';
+import 'package:group_maker/group_maker.dart';
+import 'package:group_maker/home_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -11,18 +13,11 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: Scaffold(
-        appBar: AppBar(
-          title: const Text('Group Maker'),
-          elevation: 0,
-          leading: const Icon(Icons.menu),
-          actions: [
-            IconButton(onPressed: () {}, icon: const Icon(Icons.logout))
-          ],
-        ),
-        body: const MyHomePage(),
-      ),
+      home: HomePage(),
+      routes: {
+        '/home_page': (context) => HomePage(),
+        '/group_maker': (context) => GroupMaker(),
+      },
     );
   }
 }
-

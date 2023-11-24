@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key});
   @override
@@ -107,7 +108,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     margin: const EdgeInsets.all(8.0),
                     child: ListTile(
                       title: Text(
-                        'Group ${index + 1}',
+                        'Group | 0${index + 1}',
                         style: const TextStyle(fontSize: 20),
                       ),
                       subtitle: Column(
